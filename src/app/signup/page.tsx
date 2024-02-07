@@ -1,8 +1,10 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 
 import React, { useEffect, useState } from "react";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface userDetails {
   email: string;
@@ -11,37 +13,103 @@ interface userDetails {
 }
 
 const Signup = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [userDetails, setUserDetails] = useState<userDetails>();
   const [userType, setUserType] = React.useState<string>();
   const [email, setEmail] = React.useState<string>();
   const [password, setPassword] = React.useState<string>();
+  const [cPassword, setCPassword] = React.useState<string>();
 
   const handleRodioChange = (u: string) => {
     console.log(u);
     setUserType(u);
   };
 
+  const checkSamePassword = () => {
+    if (cPassword !== password) {
+      toast("Passwords don't match", {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      console.log(password +" "+cPassword)
+      return false;
+    }
+    return true;
+  };
+
+  const checkPassword = (password: string) => {
+    let error = "";
+    // Check if the password length is at least 8 characters
+    if (password.length < 8) {
+      error = "Password must be at least 8 characters long.";
+    }
+
+    // Check if the password contains at least one uppercase letter
+    if (!/[A-Z]/.test(password)) {
+      error = "Password must contain at least one uppercase letter.";
+    }
+
+    // Check if the password contains at least one lowercase letter
+    if (!/[a-z]/.test(password)) {
+      error = "Password must contain at least one lowercase letter.";
+    }
+
+    // Check if the password contains at least one digit
+    if (!/\d/.test(password)) {
+      error = "Password must contain at least one digit.";
+    }
+
+    // Check if the password contains at least one special character
+    if (!/[^a-zA-Z0-9]/.test(password)) {
+      error = "Password must contain at least one special character.";
+    }
+    if (error.length > 0) {
+      toast(error, {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    }
+    setPassword(password);
+    if(!checkSamePassword()) return false
+    // If all criteria pass, return true
+    return true;
+  };
+
   const handleUserInput = async () => {
     setUserDetails({ email, password, userType });
+    if (checkPassword(password)) {
+      // async function postJSON(userDetails: userDetails) {
+      try {
+        const response = await fetch("http://localhost:3000/signup/api", {
+          method: "POST", // or 'PUT'
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userDetails),
+        });
 
-    // async function postJSON(userDetails: userDetails) {
-    try {
-      const response = await fetch("http://localhost:3000/signup/api", {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userDetails),
-      });
-
-      const result = await response.json();
-      console.log("Success:", result);
-      if (result.success) {
-        router.push("/login")
+        const result = await response.json();
+        console.log("Success:", result);
+        if (result.success) {
+          router.push("/login");
+        }
+      } catch (error) {
+        console.error("Error:", error);
       }
-    } catch (error) {
-      console.error("Error:", error);
     }
     // }
     console.log(userDetails);
@@ -155,6 +223,30 @@ const Signup = () => {
               />
             </div>
           </div>
+          <p className="mb-1 font-medium text-gray-500">Confirm Password</p>
+          <div className="mb-4 flex flex-col">
+            <div className="focus-within:border-blue-600 relative flex overflow-hidden rounded-md border-2 transition sm:w-80 lg:w-full">
+              <input
+                type="password"
+                onChange={(e) => setCPassword(e.target.value)}
+                id="confirm-password"
+                className="w-full border-gray-300 bg-white px-4 py-2 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
+                placeholder="Confirm Password"
+              />
+            </div>
+          </div>
+          <ToastContainer
+            position="bottom-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
           <button
             onClick={handleUserInput}
             className="hover:shadow-blue-600/40 rounded-xl bg-gradient-to-r from-blue-700 to-blue-600 px-8 py-3 font-bold text-white transition-all hover:opacity-90 hover:shadow-lg"

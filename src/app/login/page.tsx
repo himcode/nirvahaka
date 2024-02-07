@@ -2,12 +2,24 @@
 import Link from "next/link";
 import React from "react";
 import { useRouter } from "next/navigation";
+import { cookies } from 'next/headers'
 
 const Login = () => {
   const router = useRouter();
 
   const [email, setEmail] = React.useState<string>();
   const [password, setPassword] = React.useState<string>();
+
+  
+
+  // Example usage:
+  // let password = "MyPassw0rd!";
+  // let result = checkPassword(password);
+  // if (result === true) {
+  //   console.log("Password is valid.");
+  // } else {
+  //   console.log("Password is not valid: " + result);
+  // }
 
   const handleUserInput = async () => {
     // async function postJSON(userDetails: userDetails) {
@@ -23,7 +35,8 @@ const Login = () => {
       const result = await response.json();
       console.log("Success:", result);
       if (result.success) {
-        router.push("/");
+        cookies().set('jwt',result.token,{secure:true})
+        router.push("/profile");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -72,6 +85,7 @@ const Login = () => {
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   />
                 </div>
+                
                 <div className="flex items-center justify-between">
                   <div className="flex items-start">
                     <div className="flex items-center h-5">
@@ -99,7 +113,8 @@ const Login = () => {
                   </a>
                 </div>
                 <button
-                  type="submit" onClick={handleUserInput}
+                  type="submit"
+                  onClick={handleUserInput}
                   className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
                   Sign in
