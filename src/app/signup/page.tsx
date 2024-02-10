@@ -90,8 +90,8 @@ const Signup = () => {
   };
 
   const handleUserInput = async () => {
-    setUserDetails({ email, password, userType });
-    if (checkPassword(password)) {
+    const data ={ email, password, userType };
+    // if (checkPassword(password)) {
       // async function postJSON(userDetails: userDetails) {
       try {
         const response = await fetch("http://localhost:3000/signup/api", {
@@ -99,10 +99,10 @@ const Signup = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(userDetails),
+          body: JSON.stringify(data),
         });
 
-        const result = await response.json();
+        const result = await response?.json();
         console.log("Success:", result);
         if (result.success) {
           router.push("/login");
@@ -110,7 +110,7 @@ const Signup = () => {
       } catch (error) {
         console.error("Error:", error);
       }
-    }
+    // }
     // }
     console.log(userDetails);
 

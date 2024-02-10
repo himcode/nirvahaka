@@ -4,16 +4,26 @@ const client = new MongoClient(url);
 const dbName = 'nirvahaka';
 
 export async function POST(request: Request) {
+    const res = await request.json()
 
   console.log(request)
-    const res = await request.json()
+  let defaultData = {
+    text: 'default text'
+};
+let requestBody = {...res}
+delete requestBody.userType
+let dataToInsert = {
+    ...defaultData,
+    ...res
+};
     console.log(res)
     // Use connect method to connect to the server
   await client.connect();
   console.log('Connected successfully to server');
   const db = client.db(dbName);
-  const collection = db.collection('user');
-  const insertResult = await collection.insertOne({email:res.email,password:res.password,userType:res.userType});
+  const collection = db.collection(res.userType);
+//   const insertResult = await collection.insertOne({email:res.email,password:res.password,userType:res.userType});
+const insertResult = await collection.insertOne(dataToInsert);
   console.log('Inserted documents =>', insertResult);
 
   // the following code examples can be pasted here...

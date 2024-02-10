@@ -1,6 +1,7 @@
 import { error } from 'console';
 import { MongoClient } from 'mongodb'
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
+import { cookies } from 'next/headers'
 
 export async function POST(request: Request) {
 
@@ -19,7 +20,10 @@ export async function POST(request: Request) {
   client.close()
   if(user){
     if(res.email===user.email && res.password==user.password){
-      var token = jwt.sign({ foo: 'bar' }, 'secret');
+      const token = jwt.sign({ email: user.email }, 'secret');
+      // console.log(token)
+      cookies().set('token', token, { secure: true })
+
       return Response.json({ success:true, result:user, token:token })
     }else{
       return Response.json({ success:false, error:"Invalid Credentials"})

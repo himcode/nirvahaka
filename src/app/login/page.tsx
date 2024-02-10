@@ -2,7 +2,6 @@
 import Link from "next/link";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { cookies } from 'next/headers'
 
 const Login = () => {
   const router = useRouter();
@@ -21,22 +20,24 @@ const Login = () => {
   //   console.log("Password is not valid: " + result);
   // }
 
-  const handleUserInput = async () => {
+  const handleUserInput = async (event:any) => {
     // async function postJSON(userDetails: userDetails) {
+    event.preventDefault()
     try {
-      const response = await fetch("http://localhost:3000/login/api", {
+      const response = await fetch("http://localhost:3000/login/api/", {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
+        // next: { revalidate: false | 0 | number },
       });
 
       const result = await response.json();
       console.log("Success:", result);
       if (result.success) {
-        cookies().set('jwt',result.token,{secure:true})
         router.push("/profile");
+        router.refresh()
       }
     } catch (error) {
       console.error("Error:", error);
@@ -44,7 +45,7 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div >
       <section className="bg-gray-50 dark:bg-gray-900">
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
@@ -52,7 +53,7 @@ const Login = () => {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Sign in to your account
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+              <form className="space-y-4 md:space-y-6" action="POST" onSubmit={handleUserInput}>
                 <div>
                   <label
                     htmlFor="email"
@@ -114,7 +115,7 @@ const Login = () => {
                 </div>
                 <button
                   type="submit"
-                  onClick={handleUserInput}
+                  value="submit"
                   className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
                   Sign in
