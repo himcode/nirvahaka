@@ -11,20 +11,13 @@ const Login = () => {
 
   
 
-  // Example usage:
-  // let password = "MyPassw0rd!";
-  // let result = checkPassword(password);
-  // if (result === true) {
-  //   console.log("Password is valid.");
-  // } else {
-  //   console.log("Password is not valid: " + result);
-  // }
+  
 
   const handleUserInput = async (event:any) => {
     // async function postJSON(userDetails: userDetails) {
     event.preventDefault()
     try {
-      const response = await fetch("http://localhost:3000/login/api/", {
+      const response = await fetch("http://localhost:3000/api/login", {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +27,7 @@ const Login = () => {
       });
 
       const result = await response.json();
-      console.log("Success:", result);
+      
       if (result.success) {
         router.push("/profile");
         router.refresh()

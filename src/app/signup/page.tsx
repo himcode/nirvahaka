@@ -21,7 +21,6 @@ const Signup = () => {
   const [cPassword, setCPassword] = React.useState<string>();
 
   const handleRodioChange = (u: string) => {
-    console.log(u);
     setUserType(u);
   };
 
@@ -38,7 +37,6 @@ const Signup = () => {
         theme: "dark",
         transition: Bounce,
       });
-      console.log(password +" "+cPassword)
       return false;
     }
     return true;
@@ -84,37 +82,32 @@ const Signup = () => {
       });
     }
     setPassword(password);
-    if(!checkSamePassword()) return false
+    if (!checkSamePassword()) return false;
     // If all criteria pass, return true
     return true;
   };
 
   const handleUserInput = async () => {
-    const data ={ email, password, userType };
+    const data = { email, password, userType };
     // if (checkPassword(password)) {
-      // async function postJSON(userDetails: userDetails) {
-      try {
-        const response = await fetch("http://localhost:3000/signup/api", {
-          method: "POST", // or 'PUT'
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
+    // async function postJSON(userDetails: userDetails) {
+    try {
+      const response = await fetch("http://localhost:3000/api/signup", {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-        const result = await response?.json();
-        console.log("Success:", result);
-        if (result.success) {
-          router.push("/login");
-        }
-      } catch (error) {
-        console.error("Error:", error);
+      const result = await response?.json();
+
+      if (result.success) {
+        router.push("/login");
       }
-    // }
-    // }
-    console.log(userDetails);
-
-    // postJSON(userDetails);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (

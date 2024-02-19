@@ -31,3 +31,14 @@ body {
     text-wrap: balance;
   }
 }
+
+.editOff{
+  color: black;
+  border: 2px;
+}
+.editOn{
+color: white;
+background: #000;
+border-radius: 2px;
+border: 2px;
+}

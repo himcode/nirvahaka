@@ -1,24 +1,22 @@
-
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import ProfileButton from "./ProfileButton";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
+
 const jwt = require("jsonwebtoken");
 
 const Navbar = () => {
   let token: RequestCookie | undefined = cookies().get("token");
   let user: any;
-  // console.log(token);
   if (token?.value.length) {
-    user = jwt.verify(token.value, "secret");
-    
+    user = jwt.verify(token.value,process.env.JWT_KEY);
   }
+
   const handleLogout = async () => {
-    "use server"
-    console.log("logout func");
+    "use server";
+
     cookies().delete("token");
-    
   };
 
   return (
@@ -72,18 +70,8 @@ const Navbar = () => {
                 Home
               </a>
             </li>
-            <li>
-              <Link
-                href="/signup"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Register
-              </Link>
-            </li>
-            <ProfileButton
-              user={user}
-              handleLogout={handleLogout}
-            />
+
+            <ProfileButton user={user} handleLogout={handleLogout} />
           </ul>
         </div>
       </div>
