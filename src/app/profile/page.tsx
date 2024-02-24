@@ -30,18 +30,19 @@ const Profile = async () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email: user.email }),
+      body: JSON.stringify({ serviceProviderId: user.serviceProviderId }),
       // next: { revalidate: false | 0 | number },
     });
 
     result = await response.json();
+    console.log(result)
   } catch (error) {
     console.error("Error:", error);
   }
   return (
     <div>
       abc
-      <EditProfile user={result.user} userType={result.result.userType} />
+      <EditProfile user={result.result} id={user.serviceProviderId} profileType={result.profileType} />
     </div>
   );
 };

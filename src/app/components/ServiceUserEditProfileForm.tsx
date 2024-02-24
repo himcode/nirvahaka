@@ -1,60 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 interface Props {
+  id:string
   user:any
   selected:boolean
 }
 
-const ServiceUserEditProfileForm: React.FC<Props> = ({user, selected}) => {
+const ServiceUserEditProfileForm: React.FC<Props> = ({user,id, selected}) => {
+  const [fullName, setFullName] = useState(user.name);
+  const [email, setEmail] = useState(user.email);
+  const [phone, setPhone] = useState(user.phone);
+  
+
+  useEffect(() => {
+    let data = {serviceProviderId:id,email,name:fullName,phone}
+    console.log(data)
+    fetch("http://localhost:3000/api/editProfile",{
+      method:'POST',
+      body: JSON.stringify(data)
+    }).then((response) => response.json())
+    .then((result) => {
+      console.log(result)
+    })
+    .catch((error) => console.error(error));
+  }, [selected]);
+
   return (
-    <div>
+    <div className="container ml-20">
+    
       <form>
         <div className="grid gap-6 mb-6 md:grid-cols-2">
           <div>
             <label
-              htmlFor="first_name"
+              htmlFor="name"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
-              First name
+              Name
             </label>
             <input
               type="text"
-              id="first_name"
+              id="name"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="John"
+              defaultValue={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              disabled={!selected}
               required
             />
           </div>
-          <div>
-            <label
-              htmlFor="last_name"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Last name
-            </label>
-            <input
-              type="text"
-              id="last_name"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Doe"
-              required
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="company"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Company
-            </label>
-            <input
-              type="text"
-              id="company"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Flowbite"
-              required
-            />
-          </div>
+
           <div>
             <label
               htmlFor="phone"
@@ -66,38 +59,9 @@ const ServiceUserEditProfileForm: React.FC<Props> = ({user, selected}) => {
               type="tel"
               id="phone"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="123-45-678"
-              pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
-              required
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="website"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Website URL
-            </label>
-            <input
-              type="url"
-              id="website"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="flowbite.com"
-              required
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="visitors"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Unique visitors (per month)
-            </label>
-            <input
-              type="number"
-              id="visitors"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
+              defaultValue={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              disabled={!selected}
               required
             />
           </div>
@@ -105,15 +69,22 @@ const ServiceUserEditProfileForm: React.FC<Props> = ({user, selected}) => {
         <div className="mb-6">
           <label
             htmlFor="email"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            className="block mb-2 text-sm font-medium text-gray-90"
           >
             Email address
           </label>
           <input
             type="email"
             id="email"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="john.doe@company.com"
+            // className={
+            //   selected
+            //     ? "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled"
+            //     : "border-l selected"
+            // }
+            className={selected ? "editOn" : "editOff"}
+            defaultValue={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={!selected}
             required
           />
         </div>

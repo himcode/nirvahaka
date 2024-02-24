@@ -8,31 +8,33 @@ export async function POST(request: Request) {
   const req = await request.json();
   
   let defaultData = {
-    Name: "Default",
-    Gender: "Male",
+    
+    
   };
 
   // Make a copy of req.body
   let requestBody = { ...req };
 
   // Exclude a specific property, for example, 'excludeThis'
-  delete requestBody.userType;
+  delete requestBody.serviceProviderId;
 
   let dataToInsert = {
     ...defaultData,
-    ...requestBody,
+    ...requestBody
   };
   
   // Use connect method to connect to the server
   try {
   await client.connect();
+  const currentDateTime = new Date();
+  const formattedDateTime = currentDateTime.toLocaleString();
   console.log("Connected successfully to server");
   const db = client.db(dbName);
-    const collection = db.collection(req.userType);
+    const collection = db.collection("user");
     
     const updateResult = await collection.findOneAndUpdate(
-      { email: req.email },
-      { $set: dataToInsert },
+      { serviceProviderId: req.serviceProviderId },
+      { $set: {profile:dataToInsert,updatedOn:formattedDateTime} },
       { returnDocument: 'after' } // Return the updated document
     );
     

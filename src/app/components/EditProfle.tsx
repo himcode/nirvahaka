@@ -6,13 +6,14 @@ import NormalUserEditProfileForm from "../components/NormalUserEditProfileForm";
 import ServiceUserEditProfileForm from "../components/ServiceUserEditProfileForm";
 
 interface Props {
+  id:string;
   user: any;
-  userType: string;
+  profileType: string;
 }
 
-const EditProfle: React.FC<Props> = ({ user,userType }) => {
+const EditProfle: React.FC<Props> = ({ id,user,profileType }) => {
   const [selected, setSelected] = React.useState(false);
-  
+  console.log(profileType,user,id)
   
 
   return (
@@ -27,10 +28,10 @@ const EditProfle: React.FC<Props> = ({ user,userType }) => {
       >
         <CheckIcon />
       </ToggleButton>
-      {userType == "normalUser" ? (
-        <NormalUserEditProfileForm selected={selected} user={user} />
+      {profileType == "normal" ? (
+        <NormalUserEditProfileForm selected={selected} id={id} user={user} />
       ) : (
-        <ServiceUserEditProfileForm user={user} selected={selected} />
+        <ServiceUserEditProfileForm user={user} id={id} selected={selected} />
       )}
     </div>
   );

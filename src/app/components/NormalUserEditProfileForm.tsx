@@ -1,31 +1,34 @@
 import React, { useEffect, useState } from "react";
 
 interface Props {
+  id:string;
   user: any;
   selected: boolean;
 }
 
-const NormalUserEditProfileForm: React.FC<Props> = ({ user, selected }) => {
+const NormalUserEditProfileForm: React.FC<Props> = ({ user,id, selected }) => {
   
-  const [fullName, setFullName] = useState(user.Name);
+  const [fullName, setFullName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
-  const [PhoneNo, setPhoneNo] = useState(user.PhoneNo);
-
+  const [phone, setPhone] = useState(user.phone);
+  
 
   useEffect(() => {
-    let data = {email,Name:fullName,userType:"normalUser",PhoneNo}
+    let data = {serviceProviderId:id,email,name:fullName,phone}
+    console.log(data)
     fetch("http://localhost:3000/api/editProfile",{
       method:'POST',
       body: JSON.stringify(data)
     }).then((response) => response.json())
     .then((result) => {
-      console.log(result.success)
+      console.log(result)
     })
     .catch((error) => console.error(error));
   }, [selected]);
 
   return (
     <div className="container ml-20">
+      Normal
       <form>
         <div className="grid gap-6 mb-6 md:grid-cols-2">
           <div>
@@ -57,8 +60,8 @@ const NormalUserEditProfileForm: React.FC<Props> = ({ user, selected }) => {
               type="tel"
               id="phone"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              defaultValue={PhoneNo}
-              onChange={(e) => setPhoneNo(e.target.value)}
+              defaultValue={phone}
+              onChange={(e) => setPhone(e.target.value)}
               disabled={!selected}
               required
             />

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+var CryptoJS = require("crypto-js");
 import React, { useEffect, useState } from "react";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,19 +9,19 @@ import "react-toastify/dist/ReactToastify.css";
 interface userDetails {
   email: string;
   password: string;
-  usertype: string;
+  profileType: string;
 }
 
 const Signup = () => {
   const router = useRouter();
   const [userDetails, setUserDetails] = useState<userDetails>();
-  const [userType, setUserType] = React.useState<string>();
+  const [profileType, setProfileType] = React.useState<string>();
   const [email, setEmail] = React.useState<string>();
   const [password, setPassword] = React.useState<string>();
   const [cPassword, setCPassword] = React.useState<string>();
 
   const handleRodioChange = (u: string) => {
-    setUserType(u);
+    setProfileType(u);
   };
 
   const checkSamePassword = () => {
@@ -88,9 +88,14 @@ const Signup = () => {
   };
 
   const handleUserInput = async () => {
-    const data = { email, password, userType };
+    
+    let x = await CryptoJS.AES.encrypt(password, process.env.NEXT_PUBLIC_CRYPTO_KEY).toString()
+
+
+    const data = { email, x, profileType };
     // if (checkPassword(password)) {
     // async function postJSON(userDetails: userDetails) {
+    console.log(data)
     try {
       const response = await fetch("http://localhost:3000/api/signup", {
         method: "POST", // or 'PUT'
@@ -103,6 +108,8 @@ const Signup = () => {
       const result = await response?.json();
 
       if (result.success) {
+        setPassword('')
+        setCPassword('')
         router.push("/login");
       }
     } catch (error) {
@@ -159,9 +166,9 @@ const Signup = () => {
                 type="radio"
                 name="radio"
                 id="radio1"
-                value={"serviceUser"}
-                checked={userType === "serviceUser"}
-                onChange={() => handleRodioChange("serviceUser")}
+                value={"service"}
+                checked={profileType === "service"}
+                onChange={() => handleRodioChange("service")}
               />
               <label
                 className="peer-checked:border-blue-600 peer-checked:bg-blue-200 absolute top-0 h-full w-full cursor-pointer rounded-xl border"
@@ -178,9 +185,9 @@ const Signup = () => {
                 type="radio"
                 name="radio"
                 id="radio3"
-                checked={userType === "normalUser"}
-                value={"normalUser"}
-                onChange={() => handleRodioChange("normalUser")}
+                checked={profileType === "normal"}
+                value={"normal"}
+                onChange={() => handleRodioChange("normal")}
               />
               <label
                 className="peer-checked:border-blue-600 peer-checked:bg-blue-200 absolute top-0 h-full w-full cursor-pointer rounded-xl border"

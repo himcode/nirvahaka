@@ -11,13 +11,11 @@ export async function POST(request: Request) {
   console.log("Connected successfully to server");
   const db = client.db(dbName);
   const collection = db.collection("user");
-  const result = await collection.findOne({ email: res.email });
+  const result = await collection.findOne({ serviceProviderId: res.serviceProviderId });
   // console.log('Inserted documents =>', result);
   let response: any;
   if (result !== null) {
-    const ut = db.collection(result.userType);
-    const user = await ut.findOne({ email: res.email });
-    response = { success: true, result, user };
+    response = { success: true, result:result.profile, profileType:result.profileType };
   } else {
     response = { success: false, error: "Email doesn't exist in the database" };
   }

@@ -2,6 +2,10 @@
 import Link from "next/link";
 import React from "react";
 import { useRouter } from "next/navigation";
+import { FaEye } from "react-icons/fa";
+var CryptoJS = require("crypto-js");
+
+
 
 const Login = () => {
   const router = useRouter();
@@ -15,6 +19,7 @@ const Login = () => {
 
   const handleUserInput = async (event:any) => {
     // async function postJSON(userDetails: userDetails) {
+      let x = await CryptoJS.AES.encrypt(password, process.env.NEXT_PUBLIC_CRYPTO_KEY).toString()
     event.preventDefault()
     try {
       const response = await fetch("http://localhost:3000/api/login", {
@@ -22,7 +27,7 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, x }),
         // next: { revalidate: false | 0 | number },
       });
 
@@ -70,6 +75,8 @@ const Login = () => {
                   >
                     Password
                   </label>
+                  <p>
+
                   <input
                     type="password"
                     name="password"
@@ -77,7 +84,11 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  />
+                    />
+                    <FaEye/>
+                    </p>
+                    
+
                 </div>
                 
                 <div className="flex items-center justify-between">

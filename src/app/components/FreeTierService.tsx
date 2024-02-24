@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from "react";
 
 interface Props {
+  id:string;
   service: object;
   selected: boolean;
   email: string
 }
-const FreeTierService = ({ service, selected, email }) => {
+const FreeTierService = ({ service, selected,id }) => {
   console.log(service);
   const [sName, setSName] = useState(service.sName);
   const [category, setCategory] = useState(service.category);
@@ -14,10 +15,9 @@ const FreeTierService = ({ service, selected, email }) => {
   const [displayPicture, setDisplayPicture] = useState(service.displayPicture);
   const [parameters, setParameters] = useState(service.parameters);
 
-  console.log(service.parameters);
-
+  
   useEffect(() => {
-    let data = {email,sName:sName,category,location,displayPicture,parameters,_id:service._id}
+    let data = {sName:sName,category,location,displayPicture,parameters,id}
     fetch("http://localhost:3000/api/editService",{
       method:'POST',
       body: JSON.stringify(data)
