@@ -1,109 +1,180 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
+import { useRouter } from 'next/navigation'
 
+import { MdDelete } from "react-icons/md";
+
+type Pair = {
+  key: string;
+  value: string;
+};
 interface Props {
-  id:string;
+  serviceProviderId: string;
   service: object;
   selected: boolean;
-  email: string
+  type:string
 }
-const FreeTierService = ({ service, selected,id }) => {
-  console.log(service);
+
+const FreeTierService: React.FC<Props> = ({ service, selected, serviceProviderId, type }) => {
+  // console.log(service);
+  const router = useRouter()
   const [sName, setSName] = useState(service.sName);
   const [category, setCategory] = useState(service.category);
   const [location, setLocation] = useState(service.location);
   const [displayPicture, setDisplayPicture] = useState(service.displayPicture);
-  const [parameters, setParameters] = useState(service.parameters);
+  const [parameters, setParameters] = useState<Pair[]>([]);
+  const [key, setKey] = useState<string>("");
+  const [value, setValue] = useState<string>("");
+  const [pairs, setPairs] = useState<Pair[]>([...service.parameters]);
 
+  const handleParameterRemove = (index: number) => {
+    const newPairs = [...pairs];
+    newPairs.splice(index, 1);
+    setPairs(newPairs);
+  };
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    setPairs([...pairs, { key, value }]);
+    setParameters([...pairs, { key, value }])
+    console.log(pairs)
+    setKey("");
+    setValue("");
+  };
+
+  const saveService = () => {
+    let data = {
+      sName: sName,
+      category,
+      location,
+      displayPicture,
+      parameters,
+      serviceProviderId,
+    };
+    fetch("http://localhost:3000/api/addService", {
+      method: "POST",
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result.success);
+        router.push('/profile/manageService')
+      })
+      .catch((error) => console.error(error));
+  }
   
   useEffect(() => {
-    let data = {sName:sName,category,location,displayPicture,parameters,id}
-    fetch("http://localhost:3000/api/editService",{
-      method:'POST',
-      body: JSON.stringify(data)
-    }).then((response) => response.json())
-    .then((result) => {
-      console.log(result.success)
+    let data = {
+      sName: sName,
+      category,
+      location,
+      displayPicture,
+      parameters,
+      serviceProviderId,
+    };
+    console.log(data)
+    fetch("http://localhost:3000/api/editService", {
+      method: "POST",
+      body: JSON.stringify(data),
     })
-    .catch((error) => console.error(error));
-  }, [selected]);
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result.success);
+      })
+      .catch((error) => console.error(error));
+  }, [selected, parameters]);
 
   return (
-    <div>
-      {sName}
-      
-      <form className="relative flex flex-col w-full min-w-0 mb-6 break-words border border-dashed bg-clip-border rounded-2xl border-stone-200 bg-light/30 draggable">
-        {/* <!-- card body --> */}
-
-        <div className="px-9 pt-9 flex-auto min-h-[70px] pb-0 bg-transparent">
-          <div className="flex flex-wrap mb-6 xl:flex-nowrap">
-            <div className="mb-5 mr-5">
-              <div className="relative inline-block shrink-0 rounded-2xl">
-                <img
-                  className="inline-block shrink-0 rounded-2xl w-[80px] h-[80px] lg:w-[160px] lg:h-[160px]"
-                  src={displayPicture}
-                  alt="image"
-                />
-                <div className="group/tooltip relative">
-                  <span className="w-[15px] h-[15px] absolute bg-success rounded-full bottom-0 end-0 -mb-1 -mr-2  border border-white"></span>
-                  <span className="text-xs absolute z-10 transition-opacity duration-300 ease-in-out px-3 py-2 whitespace-nowrap text-center transform bg-white rounded-2xl shadow-sm bottom-0 -mb-2 start-full ml-4 font-medium text-secondary-inverse group-hover/tooltip:opacity-100 opacity-0 block">
-                    {" "}
-                    Status: Active{" "}
-                  </span>
-                </div>
-              </div>
+    <div className="grid justify-items-center text-black">
+      <div className="flex flex-row p-4 w-4/5 bg-white">
+        <div id="displayPicture" className="w-1/5 ml-[150px]">
+          <form className="flex items-center flex-col space-x-6">
+            <div className="shrink-0">
+              <img
+                className="h-24 w-24 object-cover rounded-full"
+                src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1361&q=80"
+                alt="Current profile photo"
+              />
             </div>
-            <div className="grow">
-              <div className="flex flex-wrap items-start justify-between mb-2">
-                <div className="flex flex-col">
-                  <div className="flex items-center mb-2">
-                    <input
-                      type="text"
-                      id="name"
-                      className={selected ? "editOn" : "editOff"}
-                      defaultValue={sName}
-                      onChange={(e) => setSName(e.target.value)}
-                      disabled={!selected}
-                      required
-                    />
-                  </div>
-                  <div className="flex flex-wrap pr-2 mb-4 font-medium">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-5 h-5"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                    <select
-                      id="categories"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    >
-                      {/* {category.map((cat: string) => {
-                      <option selected>{cat}</option>;
-                    })} */}
-                    </select>
-                    <input
-                      type="text"
-                      id="name"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      defaultValue={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      disabled={!selected}
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+            <label className="block">
+              <span className="sr-only">Choose profile photo</span>
+              <input
+                type="file"
+                className="block w-full text-sm text-slate-500
+      file:mr-4 file:py-2 file:px-4
+      file:rounded-full file:border-0
+      file:text-sm file:font-semibold
+      file:bg-violet-50 file:text-violet-700
+      hover:file:bg-violet-100
+    "
+              />
+            </label>
+          </form>
         </div>
-      </form>
+        <div id="container_for_Details" className="w-2/5 flex flex-col p-4">
+          <input
+            type="text"
+            id="sName"
+            defaultValue={sName}
+            className="font-extrabold text-xl"
+            onChange={(e) => setSName(e.target.value)}
+            disabled={!selected}
+            placeholder="Service Name"
+          />
+          {/* TODO- Change category input to select style */}
+          <input
+            type="text"
+            id="category"
+            defaultValue={category}
+            onChange={(e) => setCategory(e.target.value)}
+            disabled={!selected}
+            placeholder="Category"
+          />
+          <input
+            type="text"
+            className="mt-[50px]"
+            id="location"
+            defaultValue={location}
+            onChange={(e) => setLocation(e.target.value)}
+            disabled={!selected}
+            placeholder="Location"
+          />
+        </div>
+      </div>
+      <div
+        id="parameters"
+        className="flex flex-col w-3/5 bg-slate-500 p-10 items-center "
+      >
+        <ul>
+          {pairs.map((pair, index) => (
+            <li key={index}>
+              {pair.key}: {pair.value}
+              <button onClick={() => handleParameterRemove(index)}>
+                <MdDelete />
+              </button>
+            </li>
+          ))}
+        </ul>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Key"
+            value={key}
+            className="text-black"
+            onChange={(e) => setKey(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Value"
+            className="text-black"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
+          <button type="submit">Submit</button>
+        </form>
+      {type==="add" && 
+      <button onClick={saveService}>Save</button>
+    }
+      </div>
     </div>
   );
 };

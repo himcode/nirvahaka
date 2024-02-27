@@ -9,6 +9,18 @@ export async function POST(request: Request) {
   
   let defaultData = {
     
+    email:"",
+    name:"",
+    phone:"",
+    alternatePhone:"",
+    address:{
+      pincode:"000000",
+      city:"",
+      state:"",
+      line1:"",
+      line2:""
+    }
+    
     
   };
 
@@ -23,6 +35,7 @@ export async function POST(request: Request) {
     ...requestBody
   };
   
+  console.log(dataToInsert)
   // Use connect method to connect to the server
   try {
   await client.connect();

@@ -14,7 +14,7 @@ export async function generateMetadata(
   const user = jwt.verify(token.value, process.env.JWT_KEY);
 
   return {
-    title: user.email,
+    title: "Profile",
   };
 }
 

@@ -8,19 +8,53 @@ export async function POST(request: Request) {
   const currentDateTime = new Date();
   const formattedDateTime = currentDateTime.toLocaleString();
   // Use connect method to connect to the server
-  let defaultData = {
-    serviceProviderId: Date.now().toString().substr(-4, 4) + req.email.substr(0, 4) + req.profileType,
-    createdAt: formattedDateTime,
-    profileType: "user",
-    profile: {
+
+  let x;
+  if (req.userType === "normal") {
+    x = {
       name: "",
       email: "",
       phone: "",
-    },
+      address: {
+        pincode: "000000",
+        city: "",
+        state: "",
+        line1: "",
+        line2: "",
+      },
+    };
+  } else {
+    x = {
+      name: "",
+      email: "",
+      phone: "",
+      address: {
+        pincode: "000000",
+        city: "",
+        state: "",
+        line1: "",
+        line2: "",
+      },
+      company: {
+        companyname: "",
+        website: "",
+        pan: "",
+        gstIN: "",
+        instagram: "",
+      },
+    };
+  }
+  let defaultData = {
+    serviceProviderId:
+      Date.now().toString().substr(-4, 4) +
+      req.email.substr(0, 4) +
+      req.profileType,
+    createdAt: formattedDateTime,
+    profileType: "user",
+    profile: x,
     services: [],
     isDisabled: false,
   };
-
   // Make a copy of req.body
   let requestBody = { ...req };
 

@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     category: "",
     location: "",
     displayPicture: "",
-    parameters: {},
+    parameters: [],
     isActive: true,
     isDeleted: false,
     createdOn: formattedDateTime,
