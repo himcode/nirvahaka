@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import FreeTierService from "./FreeTierService";
 import Link from "next/link";
-import {config} from "../config/env.config"
 
 interface Props {
   serviceProviderId: string;
@@ -26,7 +25,7 @@ const Services: React.FC<Props> = ({ serviceProviderId }) => {
       serviceProviderId: serviceProviderId
     }
 
-    fetch(`${config.url}getServices`, {
+    fetch(`${process.env.NEXT_PUBLIC_HOST_URL}getServices`, {
       method: "POST",
       headers: myHeaders,
       body: JSON.stringify({match,skip:0,limit:0}),

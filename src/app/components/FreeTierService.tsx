@@ -53,7 +53,7 @@ const FreeTierService: React.FC<Props> = ({ service, selected, id, type }) => {
       parameters,
       serviceProviderId: id,
     };
-    fetch("http://localhost:3000/api/addService", {
+    fetch(`${process.env.NEXT_PUBLIC_HOST_URL}addService`, {
       method: "POST",
       body: JSON.stringify(data),
     })
@@ -78,7 +78,7 @@ const FreeTierService: React.FC<Props> = ({ service, selected, id, type }) => {
         serviceId: id,
       };
       console.log(data);
-      fetch("http://localhost:3000/api/editService", {
+      fetch(`${process.env.NEXT_PUBLIC_HOST_URL}editService`, {
       method: "POST",
       body: JSON.stringify(data),
     })

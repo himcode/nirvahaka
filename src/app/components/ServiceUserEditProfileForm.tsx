@@ -39,7 +39,7 @@ const ServiceUserEditProfileForm: React.FC<Props> = ({
       address: x,
       company: y,
     };
-    fetch("http://localhost:3000/api/editProfile", {
+    fetch(`${process.env.NEXT_PUBLIC_HOST_URL}editProfile`, {
       method: "POST",
       body: JSON.stringify(data),
     })

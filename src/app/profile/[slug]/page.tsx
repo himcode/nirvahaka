@@ -11,7 +11,7 @@ export default async function  Page({ params }: { params: { slug: string } }) {
 
   let service;
   try {
-    const response = await fetch("http://localhost:3000/api/getService", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}getService`, {
       method: "POST", // or 'PUT'
       headers: {
         "Content-Type": "application/json",

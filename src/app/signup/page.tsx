@@ -95,7 +95,7 @@ const Signup = () => {
     const data = { email, password:x, profileType };
     
     try {
-      const response = await fetch("http://localhost:3000/api/signup", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}signup`, {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
