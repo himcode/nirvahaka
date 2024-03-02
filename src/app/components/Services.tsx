@@ -40,7 +40,7 @@ const Services: React.FC<Props> = ({ serviceProviderId }) => {
   };
   const handleRemoveService = async (s: any) => {
     try {
-      const response = await fetch("http://localhost:3000/api/removeService", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}removeService`, {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",

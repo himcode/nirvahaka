@@ -42,14 +42,14 @@ const [limit, setLimit] = useState(5)
 
 
   const getServices: any = async (match: {},skip:number,limit:number) => {
-    console.log(skip)    
+    console.log(skip,match,servicess)    
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     const raw = JSON.stringify({match,skip,limit});
 
-    console.log(process.env.NEXT_PUBLIC_URL)
-    fetch("http://localhost:3000/api/getServices", {
+    // console.log(process.env.NEXT_PUBLIC_URL)
+    fetch(`${process.env.NEXT_PUBLIC_HOST_URL}getServices`, {
       method: "POST",
       headers: myHeaders,
       body: raw,
@@ -58,6 +58,7 @@ const [limit, setLimit] = useState(5)
       .then((response) => response.json())
       .then((result) => {
         setServicess([...servicess,...result.result]);
+        console.log(servicess)
         setSkip(skip+5)
         setTotalServices(result.totalServices)
       
@@ -65,17 +66,23 @@ const [limit, setLimit] = useState(5)
       .catch((error) => console.error(error));
   };
 
-  const handleFilter =  (event:any) =>{
+  const handleFilter =  async (event:any) =>{
     event.preventDefault()
-    setMatch({category:c,location:l})
-    getServices(match,skip,limit)
+    setSkip(0)
+    setServicess([])
+    if(l===""){
+      setMatch({category:c})
+    }else if(c===""){
+      setMatch({location:l})
+    }else{
+      setMatch({category:c,location:l})
+    }
   }
   
 
-
   useEffect(() => {
     getServices(match,skip,limit);
-    fetch("http://localhost:3000/api/getFilter", {
+    fetch(`${process.env.NEXT_PUBLIC_HOST_URL}getFilter`, {
       method: "GET",
     })
       .then((response) => response.json())
@@ -84,7 +91,7 @@ const [limit, setLimit] = useState(5)
         setLocation(result.location);
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [match]);
 
   return (
     <div>
@@ -127,7 +134,7 @@ const [limit, setLimit] = useState(5)
               </label>
               <select
                 id="location"
-                defaultValue={location}
+                defaultValue={l}
                 onChange={(e) => setL(e.target.value)}
                 className="bg-gray-50 border border-gray-300     text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
@@ -143,7 +150,7 @@ const [limit, setLimit] = useState(5)
                 Select Category
               </label>
               <select
-                defaultValue={category}
+                defaultValue={c}
                 onChange={(e) => setC(e.target.value)}
                 id="category"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
