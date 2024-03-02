@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   let requestBody = { ...req };
 
   // Exclude a specific property, for example, 'excludeThis'
-  delete requestBody._id;
+  // delete requestBody.serviceId;
 
   let dataToInsert = {
     ...defaultData,
@@ -31,9 +31,8 @@ export async function POST(request: Request) {
     const collection = db.collection("services");
     // const test = await collection.find("65d20d7e45a0f60e498d3814")
     // console.log(test)
-    let o_id = new ObjectId(req._id); 
     const updateResult = await collection.findOneAndUpdate(
-      { _id: o_id },
+      { serviceId: req.serviceId },
       { $set: dataToInsert },
       { returnDocument: 'after' } // Return the updated document
     );

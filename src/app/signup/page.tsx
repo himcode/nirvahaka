@@ -92,10 +92,8 @@ const Signup = () => {
     let x = await CryptoJS.AES.encrypt(password, process.env.NEXT_PUBLIC_CRYPTO_KEY).toString()
 
 
-    const data = { email, x, profileType };
-    // if (checkPassword(password)) {
-    // async function postJSON(userDetails: userDetails) {
-    console.log(data)
+    const data = { email, password:x, profileType };
+    
     try {
       const response = await fetch("http://localhost:3000/api/signup", {
         method: "POST", // or 'PUT'

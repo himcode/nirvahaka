@@ -35,7 +35,7 @@ const Profile = async () => {
     });
 
     result = await response.json();
-    console.log(result)
+    
   } catch (error) {
     console.error("Error:", error);
   }

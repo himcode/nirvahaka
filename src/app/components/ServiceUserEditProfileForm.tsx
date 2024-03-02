@@ -26,11 +26,11 @@ const ServiceUserEditProfileForm: React.FC<Props> = ({
   const [pan, setPan] = useState(user.company.pan);
   const [gstIN, setGstIN] = useState(user.company.gstIN);
   const [instagram, setInstagram] = useState(user.company.instagram);
-  // const [, set] = useState(initialState)
+
   useEffect(() => {
     let x = { pincode, city, state, line1, line2 };
     let y = { companyName, website, pan, gstIN, instagram };
-    // console.log(address)
+
     let data = {
       serviceProviderId: id,
       email,
@@ -39,27 +39,22 @@ const ServiceUserEditProfileForm: React.FC<Props> = ({
       address: x,
       company: y,
     };
-    console.log("data:" + data);
     fetch("http://localhost:3000/api/editProfile", {
       method: "POST",
       body: JSON.stringify(data),
     })
       .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-      })
+      .then((result) => {})
       .catch((error) => console.error(error));
   }, [selected]);
 
   useEffect(() => {
-    console.log(pincode);
     if (pincode.length == 6) {
       fetch(`https://api.postalpincode.in/pincode/${pincode}`, {
         method: "GET",
       })
         .then((response) => response.json())
         .then((result) => {
-          console.log(result[0].PostOffice);
           setState(result[0].PostOffice[0].State);
         })
         .catch((error) => console.error(error));

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import FreeTierService from "./FreeTierService";
 import Link from "next/link";
+import {config} from "../config/env.config"
 
 interface Props {
   serviceProviderId: string;
@@ -17,19 +18,22 @@ const Services: React.FC<Props> = ({ serviceProviderId }) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    const raw = JSON.stringify({
-      serviceProviderId: serviceProviderId,
-    });
+    // const raw = JSON.stringify({
+    //   serviceProviderId: serviceProviderId,
+    // });
 
-    fetch("http://localhost:3000/api/getServices", {
+    const match = {
+      serviceProviderId: serviceProviderId
+    }
+
+    fetch(`${config.url}getServices`, {
       method: "POST",
       headers: myHeaders,
-      body: raw,
+      body: JSON.stringify({match,skip:0,limit:0}),
       redirect: "follow",
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
         setServicess(result.result);
       })
       .catch((error) => console.error(error));
@@ -56,22 +60,22 @@ const Services: React.FC<Props> = ({ serviceProviderId }) => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col m-[20px] items-center">
       <Link href="/profile/addService">
     <button
       type="button"
-      className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+      className="focus:outline-none text-white p5 m5 bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
     >
       Add Service
     </button>
   </Link>
       {servicess.map((s: any) => {
         return (
-          <li key={s.serviceId}>
-            <Link href={`/profile/${s.serviceId}`}>{s.sName}</Link>
+          <li key={s.serviceId} className="m-[20px]">
+            <Link href={`/profile/${s.serviceId}`} >{s.sName}</Link>
             <button
               onClick={() => handleRemoveService(s.serviceId)}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+              className="bg-blue-500 p5 m-[10px] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
             >
               Remove Service
             </button>

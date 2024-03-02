@@ -6,6 +6,7 @@ const dbName = process.env.MONGO_DB;
 export async function POST(request: Request) {
   const res = await request.json();
   console.log(res)
+  // console.log(...res)
   let response: any;
   // Use connect method to connect to the server
   await client.connect();
@@ -13,11 +14,12 @@ export async function POST(request: Request) {
     console.log("Connected successfully to server");
     const db = client.db(dbName);
     const collection = db.collection("services");
-    const result = await collection.find({ serviceProviderId: res.serviceProviderId, isDeleted:false }).toArray();
+    const totalServices = await collection.count({...res.match})
+    const result = await collection.find({ ...res.match, isDeleted:false }).skip(res.skip).limit(res.limit).toArray()
 
     if (result !== null) {
       // console.log(result)
-      response = { success: true, result };
+      response = { success: true, result, totalServices };
     } else {
       response = { success: false, error: "No active service found" };
     }

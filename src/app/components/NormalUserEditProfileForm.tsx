@@ -18,26 +18,23 @@ const NormalUserEditProfileForm: React.FC<Props> = ({ user, id, selected }) => {
   const [city, setCity] = useState(user.address.city)
   const [line1, setLine1] = useState(user.address.line1)
   const [line2, setLine2] = useState(user.address.line2)
-  // const [, set] = useState(initialState)
+  
   useEffect(() => {
     let x ={pincode,city,state,line1,line2}
-    // console.log(address)
     let data = { serviceProviderId: id, email, name: fullName, phone, address:x };
-    console.log("data:"+data)
+    
     fetch("http://localhost:3000/api/editProfile", {
       method: "POST",
       body: JSON.stringify(data),
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
       })
       .catch((error) => console.error(error));
   }, [selected]);
 
 
   useEffect(() => {
-    console.log(pincode)
     if(pincode.length==6){
 
       fetch(`https://api.postalpincode.in/pincode/${pincode}`, {
@@ -45,7 +42,6 @@ const NormalUserEditProfileForm: React.FC<Props> = ({ user, id, selected }) => {
       })
       .then((response) => response.json())
       .then((result) => {
-        console.log(result[0].PostOffice);
         setState(result[0].PostOffice[0].State)
       })
       .catch((error) => console.error(error));

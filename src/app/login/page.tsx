@@ -9,17 +9,14 @@ var CryptoJS = require("crypto-js");
 
 const Login = () => {
   const router = useRouter();
-
   const [email, setEmail] = React.useState<string>();
   const [password, setPassword] = React.useState<string>();
 
   
-
-  
-
   const handleUserInput = async (event:any) => {
     // async function postJSON(userDetails: userDetails) {
       let x = await CryptoJS.AES.encrypt(password, process.env.NEXT_PUBLIC_CRYPTO_KEY).toString()
+      
     event.preventDefault()
     try {
       const response = await fetch("http://localhost:3000/api/login", {
@@ -27,7 +24,7 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, x }),
+        body: JSON.stringify({ email, password:x }),
         // next: { revalidate: false | 0 | number },
       });
 

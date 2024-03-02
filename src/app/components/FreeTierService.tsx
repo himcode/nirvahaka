@@ -1,23 +1,24 @@
 "use client";
 import React, { FormEvent, useEffect, useState } from "react";
-import { useRouter } from 'next/navigation'
-
+import { useRouter } from "next/navigation";
+import CheckIcon from "@mui/icons-material/Check";
 import { MdDelete } from "react-icons/md";
+import ToggleButton from "@mui/material/ToggleButton";
 
 type Pair = {
   key: string;
   value: string;
 };
 interface Props {
-  serviceProviderId: string;
+  id: string;
   service: object;
   selected: boolean;
-  type:string
+  type: string;
 }
 
-const FreeTierService: React.FC<Props> = ({ service, selected, serviceProviderId, type }) => {
+const FreeTierService: React.FC<Props> = ({ service, selected, id, type }) => {
   // console.log(service);
-  const router = useRouter()
+  const router = useRouter();
   const [sName, setSName] = useState(service.sName);
   const [category, setCategory] = useState(service.category);
   const [location, setLocation] = useState(service.location);
@@ -26,29 +27,31 @@ const FreeTierService: React.FC<Props> = ({ service, selected, serviceProviderId
   const [key, setKey] = useState<string>("");
   const [value, setValue] = useState<string>("");
   const [pairs, setPairs] = useState<Pair[]>([...service.parameters]);
-
+  const [s, setS] = React.useState(selected);
   const handleParameterRemove = (index: number) => {
     const newPairs = [...pairs];
     newPairs.splice(index, 1);
     setPairs(newPairs);
+    setParameters(newPairs);
   };
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     setPairs([...pairs, { key, value }]);
-    setParameters([...pairs, { key, value }])
-    console.log(pairs)
+    setParameters([...pairs, { key, value }]);
+    console.log(pairs);
     setKey("");
     setValue("");
   };
 
-  const saveService = () => {
+  const saveService = (event: FormEvent) => {
+    event.preventDefault();
     let data = {
       sName: sName,
       category,
       location,
       displayPicture,
       parameters,
-      serviceProviderId,
+      serviceProviderId: id,
     };
     fetch("http://localhost:3000/api/addService", {
       method: "POST",
@@ -56,38 +59,45 @@ const FreeTierService: React.FC<Props> = ({ service, selected, serviceProviderId
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log(result.success);
-        router.push('/profile/manageService')
+        console.log(result);
+        router.push("/profile/manageService");
       })
       .catch((error) => console.error(error));
-  }
-  
+  };
+
   useEffect(() => {
-    let data = {
-      sName: sName,
-      category,
-      location,
-      displayPicture,
-      parameters,
-      serviceProviderId,
-    };
-    console.log(data)
-    fetch("http://localhost:3000/api/editService", {
+    console.log(parameters)
+    if(!s){
+
+      let data = {
+        sName: sName,
+        category,
+        location,
+        displayPicture,
+        parameters,
+        serviceId: id,
+      };
+      console.log(data);
+      fetch("http://localhost:3000/api/editService", {
       method: "POST",
       body: JSON.stringify(data),
     })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result.success);
-      })
-      .catch((error) => console.error(error));
-  }, [selected, parameters]);
+    .then((response) => response.json())
+    .then((result) => {
+      console.log(result);
+    })
+    .catch((error) => console.error(error));
+  }
+  }, [s]);
 
   return (
-    <div className="grid justify-items-center text-black">
+    <form
+      onSubmit={saveService}
+      className="grid justify-items-center text-black"
+    >
       <div className="flex flex-row p-4 w-4/5 bg-white">
         <div id="displayPicture" className="w-1/5 ml-[150px]">
-          <form className="flex items-center flex-col space-x-6">
+          <div className="flex items-center flex-col space-x-6">
             <div className="shrink-0">
               <img
                 className="h-24 w-24 object-cover rounded-full"
@@ -108,7 +118,7 @@ const FreeTierService: React.FC<Props> = ({ service, selected, serviceProviderId
     "
               />
             </label>
-          </form>
+          </div>
         </div>
         <div id="container_for_Details" className="w-2/5 flex flex-col p-4">
           <input
@@ -119,6 +129,7 @@ const FreeTierService: React.FC<Props> = ({ service, selected, serviceProviderId
             onChange={(e) => setSName(e.target.value)}
             disabled={!selected}
             placeholder="Service Name"
+            required
           />
           {/* TODO- Change category input to select style */}
           <input
@@ -154,28 +165,51 @@ const FreeTierService: React.FC<Props> = ({ service, selected, serviceProviderId
             </li>
           ))}
         </ul>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Key"
-            value={key}
-            className="text-black"
-            onChange={(e) => setKey(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Value"
-            className="text-black"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
-          <button type="submit">Submit</button>
-        </form>
-      {type==="add" && 
-      <button onClick={saveService}>Save</button>
-    }
+        {
+          selected && (
+            // <form onSubmit={handleSubmit}>
+            <div>
+              <input
+                type="text"
+                placeholder="Key"
+                value={key}
+                className="text-black"
+                onChange={(e) => setKey(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Value"
+                className="text-black"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+              />
+              <button onClick={handleSubmit} type="submit">
+                Submit
+              </button>
+            </div>
+          )
+          // </form>
+        }
       </div>
-    </div>
+      {type === "add" ? (
+        <button type="submit" className="text-white">
+          Save
+        </button>
+      ) : (
+        <div className="text-white">
+          <ToggleButton
+            value="check"
+            selected={s}
+            onChange={() => {
+              setS(!s);
+            }}
+          >
+            <CheckIcon />
+          </ToggleButton>
+          {s ? "Save" : "Edit"}
+        </div>
+      )}
+    </form>
   );
 };
 

@@ -5,8 +5,11 @@ import jwt from 'jsonwebtoken'
 
 export default async function  Page({ params }: { params: { slug: string } }) {
   
-  let service
+  const token: RequestCookie | undefined = cookies().get("token");
 
+  const user: any = jwt.verify(token.value, process.env.JWT_KEY);
+
+  let service;
   try {
     const response = await fetch("http://localhost:3000/api/getService", {
       method: "POST", // or 'PUT'
@@ -30,8 +33,9 @@ export default async function  Page({ params }: { params: { slug: string } }) {
     <div>
       <FreeTierService
         service={service}
-        selected={false}
-        id={undefined}
+        selected={true}
+        id={params.slug}
+        type="edit"
       ></FreeTierService>
     </div>
   );
