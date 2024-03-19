@@ -4,6 +4,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import ToggleButton from "@mui/material/ToggleButton";
 import NormalUserEditProfileForm from "../components/NormalUserEditProfileForm";
 import ServiceUserEditProfileForm from "../components/ServiceUserEditProfileForm";
+import { useAppSelector } from "../redux/store";
 
 interface Props {
   id:string;
@@ -15,6 +16,8 @@ const EditProfle: React.FC<Props> = ({ id,user,profileType }) => {
   const [selected, setSelected] = React.useState(false);
   console.log(profileType,user,id)
   
+  const userInfo = useAppSelector((state) => state.user);
+  console.log(userInfo)
 
   return (
     <div className="container">

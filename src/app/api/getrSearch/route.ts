@@ -7,6 +7,8 @@ export async function POST(request: Request) {
   const res = await request.json();
   console.log(res)
   let response: any;
+  
+const regex = new RegExp(`${res.match}`,'i')
   // Use connect method to connect to the server
   await client.connect();
   try {
@@ -14,15 +16,8 @@ export async function POST(request: Request) {
     const db = client.db(dbName);
     const collection = db.collection("services");
     const totalServices = await collection.count({...res.match})
-    let result;
-    // result = await collection.find({ ...res.match, isDeleted:false }).skip(res.skip).limit(res.limit).toArray()
-    if(res.sType==="userSearch"){
-      const regex = new RegExp(`${res.match.sName}`,'i')
-      result = await collection.find({  sName:{$regex:regex}, isDeleted:false }).skip(res.skip).limit(res.limit).toArray()
-    }else{
-      result = await collection.find({ ...res.match, isDeleted:false }).skip(res.skip).limit(res.limit).toArray()
-  } 
-    // console.log(result)
+    const result = await collection.find({ ...res.match, isDeleted:false }).skip(res.skip).limit(res.limit).toArray()
+
     if (result !== null) {
       // console.log(result)
       response = { success: true, result, totalServices };

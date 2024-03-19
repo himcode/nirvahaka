@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
       cookies().set("token", token, { secure: true });
 
-      return Response.json({ success: true, result: user, token: token });
+      return Response.json({ success: true, user: user, token: token });
     } else {
       return Response.json({ success: false, error: "Invalid Credentials" });
     }

@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   // console.log('Inserted documents =>', result);
   let response: any;
   if (result !== null) {
-    response = { success: true, result:result.profile, profileType:result.profileType };
+    response = { success: true, profile:result.profile, profileType:result.profileType };
   } else {
     response = { success: false, error: "Email doesn't exist in the database" };
   }

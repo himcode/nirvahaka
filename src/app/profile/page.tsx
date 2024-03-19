@@ -5,14 +5,15 @@ import jwt from "jsonwebtoken";
 import type { Metadata, ResolvingMetadata } from "next";
 import EditProfile from "../components/EditProfle";
 import "./profile.css";
+import Payment from "../components/Payment";
 
 export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const token: RequestCookie | undefined = cookies().get("token");
+  //   const token: RequestCookie | undefined = cookies().get("token");
 
-  const user = jwt.verify(token.value, process.env.JWT_KEY);
-
+  //   const user = jwt.verify(token.value, process.env.JWT_KEY);
+  // console.log(user)
   return {
     title: "Profile",
   };
@@ -23,7 +24,6 @@ const Profile = async () => {
 
   const user: any = jwt.verify(token.value, process.env.JWT_KEY);
   let result: any;
-
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}getUser`, {
       method: "POST", // or 'PUT'
@@ -35,14 +35,19 @@ const Profile = async () => {
     });
 
     result = await response.json();
-    
   } catch (error) {
     console.error("Error:", error);
   }
+  console.log(result.profileType);
   return (
     <div>
       abc
-      <EditProfile user={result.result} id={user.serviceProviderId} profileType={result.profileType} />
+      {user.profileType === "service" && <Payment></Payment>}
+      <EditProfile
+        user={result.profile}
+        id={user.serviceProviderId}
+        profileType={result.profileType}
+      />
     </div>
   );
 };

@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import FreeTierService from "./FreeTierService";
 import Link from "next/link";
 
 interface Props {
@@ -17,10 +16,6 @@ const Services: React.FC<Props> = ({ serviceProviderId }) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    // const raw = JSON.stringify({
-    //   serviceProviderId: serviceProviderId,
-    // });
-
     const match = {
       serviceProviderId: serviceProviderId
     }
@@ -28,7 +23,7 @@ const Services: React.FC<Props> = ({ serviceProviderId }) => {
     fetch(`${process.env.NEXT_PUBLIC_HOST_URL}getServices`, {
       method: "POST",
       headers: myHeaders,
-      body: JSON.stringify({match,skip:0,limit:0}),
+      body: JSON.stringify({match,skip:0,limit:0,sType:"serviceUser"}),
       redirect: "follow",
     })
       .then((response) => response.json())

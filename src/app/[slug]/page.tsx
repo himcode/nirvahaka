@@ -1,14 +1,14 @@
+"use client"
 import FreeTierService from "@/app/components/FreeTierService";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
-import { cookies } from "next/headers";
-import jwt from 'jsonwebtoken'  
-import Tier1Service from "@/app/components/Tier1Service";
+import Tier1Service from "../components/Tier1Service";
 
 export default async function  Page({ params }: { params: { slug: string } }) {
   
-  const token: RequestCookie | undefined = cookies().get("token");
+  // const token: RequestCookie | undefined = cookies().get("token");
 
-  const user: any = jwt.verify(token.value, process.env.JWT_KEY);
+  // const user: any = jwt.verify(token.value, process.env.JWT_KEY);
+
 
   let service;
   try {

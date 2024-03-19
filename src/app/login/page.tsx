@@ -4,35 +4,41 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { FaEye } from "react-icons/fa";
 var CryptoJS = require("crypto-js");
-
-
+import { loginSuccess } from "../redux/slices/userSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../redux/store";
 
 const Login = () => {
   const router = useRouter();
   const [email, setEmail] = React.useState<string>();
   const [password, setPassword] = React.useState<string>();
+  const dispatch = useDispatch<AppDispatch>();
 
-  
-  const handleUserInput = async (event:any) => {
+  const handleUserInput = async (event: any) => {
     // async function postJSON(userDetails: userDetails) {
-      let x = await CryptoJS.AES.encrypt(password, process.env.NEXT_PUBLIC_CRYPTO_KEY).toString()
-      
-    event.preventDefault()
+    let x = await CryptoJS.AES.encrypt(
+      password,
+      process.env.NEXT_PUBLIC_CRYPTO_KEY
+    ).toString();
+
+    event.preventDefault();
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}login`, {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password:x }),
+        body: JSON.stringify({ email, password: x }),
         // next: { revalidate: false | 0 | number },
       });
 
       const result = await response.json();
-      
+
       if (result.success) {
+        dispatch(loginSuccess(result.user));
         router.push("/profile");
-        router.refresh()
+        router.refresh();
       }
     } catch (error) {
       console.error("Error:", error);
@@ -40,7 +46,7 @@ const Login = () => {
   };
 
   return (
-    <div >
+    <div>
       <section className="bg-gray-50 dark:bg-gray-900">
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
@@ -48,7 +54,11 @@ const Login = () => {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Sign in to your account
               </h1>
-              <form className="space-y-4 md:space-y-6" action="POST" onSubmit={handleUserInput}>
+              <form
+                className="space-y-4 md:space-y-6"
+                action="POST"
+                onSubmit={handleUserInput}
+              >
                 <div>
                   <label
                     htmlFor="email"
@@ -73,21 +83,18 @@ const Login = () => {
                     Password
                   </label>
                   <p>
-
-                  <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    <input
+                      type="password"
+                      name="password"
+                      id="password"
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     />
-                    <FaEye/>
-                    </p>
-                    
-
+                    <FaEye />
+                  </p>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-start">
                     <div className="flex items-center h-5">

@@ -33,7 +33,7 @@ const addService = () => {
       >
         <CheckIcon />
       </ToggleButton> */}
-      <FreeTierService service={s} serviceProviderId={user.serviceProviderId} selected={true} type={"add"}></FreeTierService>
+      <FreeTierService service={s} id={user.serviceProviderId} selected={true} type={"add"}></FreeTierService>
     </>
   );
 };

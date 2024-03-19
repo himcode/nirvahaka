@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import CategorySidebar from "./CategorySidebar";
-import InfiniteScroll from 'react-infinite-scroll-component';
+import InfiniteScroll from "react-infinite-scroll-component";
+import SearchBar from "./SearchBar";
 
 const BrowseServices = () => {
   const [category, setCategory] = useState([]);
@@ -11,42 +11,44 @@ const BrowseServices = () => {
   const [c, setC] = useState("");
   const [l, setL] = useState("");
   const [match, setMatch] = useState({});
-const [totalServices, setTotalServices] = useState(0)
-const [hasMore, setHasMore] = useState(true)
-const [skip, setSkip] = useState(0)
-const [limit, setLimit] = useState(5)
-
-  const fetchMoreData = async() => {
+  const [totalServices, setTotalServices] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [skip, setSkip] = useState(0);
+  const [limit, setLimit] = useState(5);
+  const [sType, setSType] = useState("default");
+  const fetchMoreData = async () => {
     if (servicess.length >= totalServices) {
       setHasMore(false);
       return;
     }
-    setSkip(skip+5)
+    setSkip(skip + 5);
     setTimeout(() => {
-    getServices(match,skip,limit)
-    // a fake async api call like which sends
-    // 20 more records in .5 secs        
+      getServices(match, skip, limit, sType);
+      // a fake async api call like which sends
+      // 20 more records in .5 secs
     }, 500);
   };
 
+  const handleSearch = (searchQuery: string) => {
+    setMatch({ sName: searchQuery });
+    setSkip(0);
+    console.log(match);
+    setServicess([]);
+    setSType("userSearch")
+    getServices(match, skip, limit, sType);
+  };
 
-
-
-
-
-
-
-
-
-
-
-
-  const getServices: any = async (match: {},skip:number,limit:number) => {
-    console.log(skip,match,servicess)    
+  const getServices: any = async (
+    match: {},
+    skip: number,
+    limit: number,
+    type: string
+  ) => {
+    console.log(skip, match, servicess);
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    const raw = JSON.stringify({match,skip,limit});
+    const raw = JSON.stringify({ match, skip, limit, sType });
 
     // console.log(process.env.NEXT_PUBLIC_URL)
     fetch(`${process.env.NEXT_PUBLIC_HOST_URL}getServices`, {
@@ -57,31 +59,30 @@ const [limit, setLimit] = useState(5)
     })
       .then((response) => response.json())
       .then((result) => {
-        setServicess([...servicess,...result.result]);
-        console.log(servicess)
-        setSkip(skip+5)
-        setTotalServices(result.totalServices)
-      
+        console.log(result.result);
+        setServicess([...servicess, ...result.result]);
+        console.log(servicess);
+        setSkip(skip + 5);
+        setTotalServices(result.totalServices);
       })
       .catch((error) => console.error(error));
   };
 
-  const handleFilter =  async (event:any) =>{
-    event.preventDefault()
-    setSkip(0)
-    setServicess([])
-    if(l===""){
-      setMatch({category:c})
-    }else if(c===""){
-      setMatch({location:l})
-    }else{
-      setMatch({category:c,location:l})
+  const handleFilter = async (event: any) => {
+    event.preventDefault();
+    setSkip(0);
+    setServicess([]);
+    if (l === "") {
+      setMatch({ category: c });
+    } else if (c === "") {
+      setMatch({ location: l });
+    } else {
+      setMatch({ category: c, location: l });
     }
-  }
-  
+  };
 
   useEffect(() => {
-    getServices(match,skip,limit);
+    getServices(match, skip, limit,sType);
     fetch(`${process.env.NEXT_PUBLIC_HOST_URL}getFilter`, {
       method: "GET",
     })
@@ -125,7 +126,10 @@ const [limit, setLimit] = useState(5)
           aria-label="Sidebar"
         >
           <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-            <form onSubmit={handleFilter} className="max-w-sm mx-auto mt-[70px]">
+            <form
+              onSubmit={handleFilter}
+              className="max-w-sm mx-auto mt-[70px]"
+            >
               <label
                 htmlFor="location"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -170,46 +174,47 @@ const [limit, setLimit] = useState(5)
           </div>
         </aside>
       </div>
-      <InfiniteScroll
-          dataLength={servicess.length}
-          next={fetchMoreData}
-          hasMore={hasMore}
-          loader={<h4>Loading...</h4>}
-          endMessage={
-            <p style={{ textAlign: "center" }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
-        >
-      <div className=" grid grid-cols-1 gap-8 p-4 sm:ml-64">
 
-        {servicess.map((s) => {
-          return (
-            <Link
-              href="#"
-              className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+      <InfiniteScroll
+        dataLength={servicess.length}
+        next={fetchMoreData}
+        hasMore={hasMore}
+        loader={<h4>Loading...</h4>}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>Yay! You have seen it all</b>
+          </p>
+        }
+      >
+        <div className=" grid grid-cols-1 gap-8 p-4 sm:ml-64">
+          <SearchBar handleSearch={handleSearch}></SearchBar>
+          {servicess.map((s: any) => {
+            return (
+              <Link
+                href={`${s.serviceId}`}
+                className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
               >
-              <img
-                className="object-cover w-96 rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
-                src={s.displayPicture}
-                alt=""
-              />
-              <div className="flex flex-col justify-between p-4 leading-normal">
-                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  {s.sName}
-                </h5>
-                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                  {s.category}
-                </p>
-                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                  {s.location}
-                </p>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-        </InfiniteScroll>
+                <img
+                  className="object-cover w-96 rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
+                  src={s.displayPicture}
+                  alt=""
+                />
+                <div className="flex flex-col justify-between p-4 leading-normal">
+                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    {s.sName}
+                  </h5>
+                  <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                    {s.category}
+                  </p>
+                  <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                    {s.location}
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </InfiniteScroll>
     </div>
   );
 };
