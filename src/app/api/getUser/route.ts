@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   console.log("Connected successfully to server");
   const db = client.db(dbName);
   const collection = db.collection("user");
-  const result = await collection.findOne({ serviceProviderId: res.serviceProviderId });
+  const result = await collection.findOne({ userId: res.userId });
   // console.log('Inserted documents =>', result);
   let response: any;
   if (result !== null) {

@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     if (res.email === user.email && upassword == password) {
       const token = jwt.sign(
         {
-          serviceProviderId: user.serviceProviderId,
+          userId: user.userId,
           profileType: user.profileType,
         },
         process.env.JWT_KEY

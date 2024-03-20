@@ -51,7 +51,7 @@ const FreeTierService: React.FC<Props> = ({ service, selected, id, type }) => {
       location,
       displayPicture,
       parameters,
-      serviceProviderId: id,
+      userId: id,
     };
     fetch(`${process.env.NEXT_PUBLIC_HOST_URL}addService`, {
       method: "POST",

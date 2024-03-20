@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 interface Props {
-  serviceProviderId: string;
+  userId: string;
 }
 
-const Services: React.FC<Props> = ({ serviceProviderId }) => {
+const Services: React.FC<Props> = ({ userId }) => {
   let result: any;
   const [servicess, setServicess] = useState([]);
   useEffect(() => {
@@ -17,7 +17,7 @@ const Services: React.FC<Props> = ({ serviceProviderId }) => {
     myHeaders.append("Content-Type", "application/json");
 
     const match = {
-      serviceProviderId: serviceProviderId
+      userId: userId
     }
 
     fetch(`${process.env.NEXT_PUBLIC_HOST_URL}getServices`, {

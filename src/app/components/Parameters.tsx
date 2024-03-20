@@ -8,10 +8,10 @@ type Pair = {
 interface Props {
   parameters: Array<Pair>;
   selected:boolean;
-  serviceProviderId:string
+  userId:string
 }
 
-const Parameters: React.FC<Props> = ({ parameters,selected, serviceProviderId }) => {
+const Parameters: React.FC<Props> = ({ parameters,selected, userId }) => {
   const [key, setKey] = useState<string>("");
   const [value, setValue] = useState<string>("");
   const [pairs, setPairs] = useState<Pair[]>([...parameters]);

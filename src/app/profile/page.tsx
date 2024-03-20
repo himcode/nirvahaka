@@ -30,7 +30,7 @@ const Profile = async () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ serviceProviderId: user.serviceProviderId }),
+      body: JSON.stringify({ userId: user.userId }),
       // next: { revalidate: false | 0 | number },
     });
 
@@ -45,7 +45,7 @@ const Profile = async () => {
       {user.profileType === "service" && <Payment></Payment>}
       <EditProfile
         user={result.profile}
-        id={user.serviceProviderId}
+        id={user.userId}
         profileType={result.profileType}
       />
     </div>

@@ -42,10 +42,11 @@ export async function POST(request: Request) {
         gstIN: "",
         instagram: "",
       },
+      tier:"free"
     };
   }
   let defaultData = {
-    serviceProviderId:
+    userId:
       Date.now().toString().substr(-4, 4) +
       req.email.substr(0, 4) +
       req.profileType,

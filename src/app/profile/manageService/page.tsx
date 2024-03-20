@@ -16,7 +16,7 @@ const manageService = async () => {
   
   
   
-  return <Services serviceProviderId={user.serviceProviderId}></Services>;
+  return <Services userId={user.userId}></Services>;
 };
 
 export default manageService;

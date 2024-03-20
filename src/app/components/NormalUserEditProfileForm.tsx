@@ -21,7 +21,7 @@ const NormalUserEditProfileForm: React.FC<Props> = ({ user, id, selected }) => {
   
   useEffect(() => {
     let x ={pincode,city,state,line1,line2}
-    let data = { serviceProviderId: id, email, name: fullName, phone, address:x };
+    let data = { userId: id, email, name: fullName, phone, address:x };
     
     fetch(`${process.env.NEXT_PUBLIC_HOST_URL}editProfile`, {
       method: "POST",

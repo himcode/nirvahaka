@@ -32,7 +32,7 @@ const ServiceUserEditProfileForm: React.FC<Props> = ({
     let y = { companyName, website, pan, gstIN, instagram };
 
     let data = {
-      serviceProviderId: id,
+      userId: id,
       email,
       name: fullName,
       phone,

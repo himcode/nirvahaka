@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   const formattedDateTime = currentDateTime.toLocaleString();
   let count = 0;
   let defaultData = {
-    serviceProviderId: req.serviceProviderId,
+    userId: req.userId,
     serviceId: "",
     sName: "",
     category: "",
@@ -41,13 +41,13 @@ export async function POST(request: Request) {
     const collection = db.collection("services");
     count = (
       await collection
-        .find({ serviceProviderId: req.serviceProviderId })
+        .find({ userId: req.userId })
         .toArray()
     ).length;
-    dataToInsert.serviceId = req.serviceProviderId + count;
+    dataToInsert.serviceId = req.userId + count;
     const updateResult = await collection.insertOne(dataToInsert);
     const userUpdate = await db.collection("user").updateOne(
-      { serviceProviderId: req.serviceProviderId },
+      { userId: req.userId },
       {
         $push: { services: dataToInsert.serviceId },
       }

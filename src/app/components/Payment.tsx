@@ -36,7 +36,7 @@ const Payment = () => {
       description: "Test Transaction",
       image: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FImage&psig=AOvVaw08o6dVr-XKrVEDl9yOew-Y&ust=1710934362330000&source=images&cd=vfe&opi=89978449&ved=0CBMQjRxqFwoTCIDjzaidgIUDFQAAAAAdAAAAABAE",
       order_id: result.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-      callback_url: "http://localhost:3000/",
+      callback_url: "http://localhost:3000/api/updateTier",
       prefill: { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
           name: "Gaurav Kumar", //your customer's name
           email: "gaurav.kumar@example.com",

@@ -21,14 +21,13 @@ export async function POST(request: Request) {
       line2:""
     }
     
-    
   };
 
   // Make a copy of req.body
   let requestBody = { ...req };
 
   // Exclude a specific property, for example, 'excludeThis'
-  delete requestBody.serviceProviderId;
+  delete requestBody.userId;
 
   let dataToInsert = {
     ...defaultData,
@@ -46,7 +45,7 @@ export async function POST(request: Request) {
     const collection = db.collection("user");
     
     const updateResult = await collection.findOneAndUpdate(
-      { serviceProviderId: req.serviceProviderId },
+      { userId: req.userId },
       { $set: {profile:dataToInsert,updatedOn:formattedDateTime} },
       { returnDocument: 'after' } // Return the updated document
     );
