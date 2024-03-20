@@ -7,6 +7,7 @@ const dbName = process.env.MONGO_DB;
 export async function POST(request: Request) {
 const formData = await request.formData()
   let response: string="test";
+  redirect('/profile')
 console.log(formData.get("razorpay_payment_id"))
 
   return Response.json({response});
