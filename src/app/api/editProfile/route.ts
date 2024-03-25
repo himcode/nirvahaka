@@ -39,14 +39,13 @@ export async function POST(request: Request) {
   try {
   await client.connect();
   const currentDateTime = new Date();
-  const formattedDateTime = currentDateTime.toLocaleString();
   console.log("Connected successfully to server");
   const db = client.db(dbName);
     const collection = db.collection("user");
     
     const updateResult = await collection.findOneAndUpdate(
       { userId: req.userId },
-      { $set: {profile:dataToInsert,updatedOn:formattedDateTime} },
+      { $set: {profile:dataToInsert,updatedOn:currentDateTime} },
       { returnDocument: 'after' } // Return the updated document
     );
     

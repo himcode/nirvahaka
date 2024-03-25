@@ -6,7 +6,6 @@ const dbName = process.env.MONGO_DB;
 export async function POST(request: Request) {
   const req = await request.json();
   const currentDateTime = new Date();
-  const formattedDateTime = currentDateTime.toLocaleString();
   let count = 0;
   let defaultData = {
     userId: req.userId,
@@ -18,8 +17,8 @@ export async function POST(request: Request) {
     parameters: [],
     isActive: true,
     isDeleted: false,
-    createdOn: formattedDateTime,
-    updatedOn: formattedDateTime,
+    createdOn: currentDateTime,
+    updatedOn: currentDateTime,
     validUpTo: "",
   };
 

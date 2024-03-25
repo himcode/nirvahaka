@@ -42,7 +42,7 @@ const Profile = async () => {
   return (
     <div>
       abc
-      {user.profileType === "service" && <Payment></Payment>}
+      {user.profileType === "service" && <Payment tier={result.tier}></Payment>}
       <EditProfile
         user={result.profile}
         id={user.userId}

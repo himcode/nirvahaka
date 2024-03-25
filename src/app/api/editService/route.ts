@@ -6,7 +6,7 @@ const dbName = process.env.MONGO_DB;
 export async function POST(request: Request) {
 
   const req = await request.json();
-  
+  const currentDateTime = new Date();
   let defaultData = {
     
     location: "Delhi",
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     // console.log(test)
     const updateResult = await collection.findOneAndUpdate(
       { serviceId: req.serviceId },
-      { $set: dataToInsert },
+      { $set: dataToInsert,updatedOn:currentDateTime },
       { returnDocument: 'after' } // Return the updated document
     );
     
