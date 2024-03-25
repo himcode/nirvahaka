@@ -5,7 +5,7 @@ const dbName = process.env.MONGO_DB;
 
 export async function POST(request: Request) {
   const req = await request.json();
-
+  const currentDateTime = new Date();
   try {
     await client.connect();
     console.log("Connected successfully to server");
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     
     const updateResult = await collection.findOneAndUpdate(
       { serviceId: req.serviceId },
-      { $set: { isActive: false, isDeleted: true } },
+      { $set: { isActive: false, isDeleted: true,updatedOn:currentDateTime } },
       { returnDocument: "after" } // Return the updated document
     );
 

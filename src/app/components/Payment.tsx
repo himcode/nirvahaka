@@ -7,7 +7,10 @@ declare global {
       Razorpay: any;
     }
   }
-const Payment = () => {
+  interface Props {
+    tier:string
+  }
+const Payment:React.FC<Props> = ({tier}) => {
 
     const [amount, setamount] = useState("50000")
   const payment = async (amount:string)=>{
@@ -55,11 +58,17 @@ const Payment = () => {
 
   }
 
+  console.log(tier)
   return (
     <div>
         <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
+      {tier=="free"? <div>
+
       <input type="text" onChange={(e)=>setamount(e.target.value)} />
        <button onClick={()=>payment(amount)}>PAY</button>
+       </div> :
+       <span>You have a Premium Subsciption</span>}
+       {tier}
     </div>
   )
 }

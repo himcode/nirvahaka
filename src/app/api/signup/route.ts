@@ -6,7 +6,6 @@ const dbName = process.env.MONGO_DB;
 export async function POST(request: Request) {
   const req = await request.json();
   const currentDateTime = new Date();
-  const formattedDateTime = currentDateTime.toLocaleString();
   // Use connect method to connect to the server
 
   let x;
@@ -50,7 +49,7 @@ export async function POST(request: Request) {
       Date.now().toString().substr(-4, 4) +
       req.email.substr(0, 4) +
       req.profileType,
-    createdAt: formattedDateTime,
+    createdAt: currentDateTime,
     profileType: "user",
     profile: x,
     services: [],
