@@ -3,39 +3,52 @@ import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
 const Chat = () => {
-  const [messages, setMessages] = useState<string[]>([]);
-  const [currentMessage, setCurrentMessage] = useState<string>('');
+    // State to store the messages
+    const [messages, setMessages] = useState([]);
+    // State to store the current message
+    const [currentMessage, setCurrentMessage] = useState('');
+    // Create a socket connection
+    const socket = io();
+    
+    useEffect(() => {
 
-  const socket = io();
-  useEffect(() => {
+        // Listen for incoming messages
+        socket.on('message', (message) => {
+            setMessages((prevMessages) => [...prevMessages, message]);
+            console.log(messages)
+        });
 
-    socket.on('message', (message: string) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
+        // Clean up the socket connection on unmount
+        return () => {
+            socket.disconnect();
+        };
+    }, []);
 
-    return () => {
-      socket.disconnect();
+    const sendMessage = () => {
+        // Send the message to the server
+        socket.emit('message', currentMessage);
+        // Clear the currentMessage state
+        setCurrentMessage('');
     };
-  }, []);
 
-  const sendMessage = () => {
-    socket.emit('message', currentMessage);
-    setCurrentMessage('');
-  };
+    return (
+        <div>
+            {/* Display the messages */}
+            {messages.map((message, index) => (
+                <p className = 'border' key={index}>{message}</p>
+            ))}
 
-  return (
-    <div>
-      {messages.map((message, index) => (
-        <p key={index}>{message}</p>
-      ))}
-      <input
-        type="text"
-        value={currentMessage}
-        onChange={(e) => setCurrentMessage(e.target.value)}
-      />
-      <button onClick={sendMessage}>Send</button>
-    </div>
-  );
+            {/* Input field for sending new messages */}
+            <input
+                type="text"
+                value={currentMessage}
+                onChange={(e) => setCurrentMessage(e.target.value)}
+            />
+
+            {/* Button to submit the new message */}
+            <button onClick={sendMessage}>Send</button>
+        </div>
+    );
 };
 
 export default Chat;

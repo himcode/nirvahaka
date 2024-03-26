@@ -54,6 +54,7 @@ export async function POST(request: Request) {
     profile: x,
     services: [],
     isDisabled: false,
+    tier:"free"
   };
   // Make a copy of req.body
   let requestBody = { ...req };
