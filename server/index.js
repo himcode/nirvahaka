@@ -1,29 +1,44 @@
-const Server = require('socket.io');
+const http = require("http")
+const express = require("express");
+const cors = require("cors");
+const socketIO = require("socket.io")
 
-// Create a socket.io server
-const ioHandler = (req, res) => {
-    if (!res.socket.server.io) {
-        console.log('*First use, starting Socket.IO');
-        console.log(res)
-        const io = new Server(res.socket.server);
+const app = express();
 
-        // Listen for connection events
-        io.on('connection', (socket) => {
-            console.log(`Socket ${socket.id} connected.`);
+const users = [{}];
 
-            // Listen for incoming messages and broadcast to all clients
-            socket.on('message', (message) => {
-                io.emit('message', message);
-            });
+app.use(cors())
+const port = 4500 || process.env.PORT;
 
-            // Clean up the socket on disconnect
-            socket.on('disconnect', () => {
-                console.log(`Socket ${socket.id} disconnected.`);
-            });
-        });
-        res.socket.server.io = io;
-    }
-    res.end();
-};
+app.get("/", (req, res) => {
+  res.send("Server");
+})
 
-module.exports = ioHandler;
+const server = http.createServer(app)
+
+const io = socketIO(server);
+io.on("connection", (socket) => {
+  console.log("New Connection")
+
+  socket.on('joined', ({ user }) => {
+
+    users[socket.id] = user;
+    console.log(`${user} has joined `);
+    socket.broadcast.emit('userJoined', { user: "Admin", message: ` ${user} has joined` });
+    socket.emit('welcome', { user: "Admin", message: `Welcome to the chat,${user}` })
+    
+  })
+
+  socket.on('message', ({ message,id})=>{
+    io.emit('sendMessage',{user:users[id],message,id})
+  })
+
+  socket.on('dc',()=>{
+    socket.broadcast.emit('leave',{user:'Admin',message:`${users[socket.id]}  has left`})
+  })
+
+});
+
+server.listen(port, () => {
+  console.log(`Server is working on http://localhost:${port}`)
+})

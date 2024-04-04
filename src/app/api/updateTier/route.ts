@@ -38,6 +38,7 @@ export async function POST(request: Request) {
   };
   let insertResult;
   let updateResult;
+  let updateServices;
   if (isAuthentic) {
     try {
       await client.connect();
@@ -45,8 +46,19 @@ export async function POST(request: Request) {
       const db = client.db(dbName);
       const transaction = db.collection("transaction");
       const userCollection = db.collection("user");
+      const services = db.collection("services");
       insertResult = await transaction.insertOne(dataToInsert);
       updateResult = await userCollection.findOneAndUpdate(
+        { userId: user.userId },
+        {
+          $set: {
+            tier: "paid",
+            updatedOn: currentDateTime,
+            validUpto: validUpto,
+          },
+        }
+      );
+      updateServices = await services.updateMany(
         { userId: user.userId },
         {
           $set: {
@@ -67,7 +79,6 @@ export async function POST(request: Request) {
     // Check if the update was successful
     if (updateResult && insertResult) {
       redirect("/profile");
-      return Response.redirect("/profile");
     } else if (updateResult) {
       // Return the updated document as JSON
       return Response.json({

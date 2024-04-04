@@ -1,54 +1,110 @@
-"use client"
-import { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+"use client";
+import React, { useEffect, useState } from "react";
+// import { n } from "../../utils/join";
+import socketIO from "socket.io-client";
+import "../../utils/chat.css";
+import ScrollToBottom from "react-scroll-to-bottom";
 
-const Chat = () => {
-    // State to store the messages
-    const [messages, setMessages] = useState([]);
-    // State to store the current message
-    const [currentMessage, setCurrentMessage] = useState('');
-    // Create a socket connection
-    const socket = io();
-    
-    useEffect(() => {
 
-        // Listen for incoming messages
-        socket.on('message', (message) => {
-            setMessages((prevMessages) => [...prevMessages, message]);
-            console.log(messages)
-        });
+const ENDPOINT = "http://localhost:4500";
+let socket: any;
 
-        // Clean up the socket connection on unmount
-        return () => {
-            socket.disconnect();
-        };
-    }, []);
+interface Props{
+    userId:string;
+}
 
-    const sendMessage = () => {
-        // Send the message to the server
-        socket.emit('message', currentMessage);
-        // Clear the currentMessage state
-        setCurrentMessage('');
+const Chat:React.FC<Props> = ({userId}) => {
+  
+  const [id, setid] = useState("");
+  const [messages, setMessages] = useState<any[]>([]);
+  const [inputText, setInputText] = useState<string>("");
+
+  useEffect(() => {
+    socket = socketIO(ENDPOINT, { transports: ["websocket"] });
+    socket.on("connect", () => {
+      // alert('connected')
+      setid(socket.id);
+    });
+
+    socket.emit("joined", { user: userId });
+    socket.on("welcome", (data: any) => {
+      setMessages([...messages, data]);
+      console.log(data.user + ":" + data.message);
+    });
+    socket.on("userJoined", (data: any) => {
+      setMessages([...messages, data]);
+      console.log(data.user + ":" + data.message);
+    });
+
+    socket.on("sendMessage", (data: any) => {
+      setMessages([...messages, data]);
+      console.log(data.user, data.message, data.id);
+    });
+
+    socket.on("leave", (data: any) => {
+      setMessages([...messages, data]);
+      console.log(data.user, data.message);
+    });
+    return () => {
+      socket.emit("dc");
+      socket.off();
     };
+  }, []);
 
-    return (
-        <div>
-            {/* Display the messages */}
-            {messages.map((message, index) => (
-                <p className = 'border' key={index}>{message}</p>
+  useEffect(() => {
+    socket.on("sendMessage", (data: any) => {
+      setMessages([...messages, data]);
+      console.log(messages);
+      console.log(data.user, data.message, data.id);
+    });
+    return () => {
+      socket.off();
+    };
+  }, [messages]);
+
+  const handleSend = () => {
+    if (inputText.trim() !== "") {
+      socket.emit("message", { message: inputText, id });
+      // setMessages([...messages, { message: inputText, user: n }]);
+      setInputText("");
+    }
+  };
+  return (
+    <div className="center">
+      <div className="userName">{userId}</div>
+      <div className="ChatContainer">
+        <ScrollToBottom className="messagesContainer">
+          <div className="test">
+            {messages.map((i, index) => (
+              // <div key={index} className={i.user === n ? 'sender' : 'receiver ' }>
+              <div
+                key={index}
+                className={i.user === userId ? "sender message" : "receiver message"}
+              >
+                {i.user === userId ? i.message : `${i.user}:${i.message}`}
+              </div>
             ))}
+          </div>
+        </ScrollToBottom>
 
-            {/* Input field for sending new messages */}
-            <input
-                type="text"
-                value={currentMessage}
-                onChange={(e) => setCurrentMessage(e.target.value)}
-            />
-
-            {/* Button to submit the new message */}
-            <button onClick={sendMessage}>Send</button>
+        <div className="InputContainer">
+          <input
+            onKeyPress={(event) =>
+              event.key === "Enter" ? handleSend() : null
+            }
+            type="text"
+            className="InputField"
+            placeholder="Type your message..."
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+          />
+          <button type="submit" className="SendButton" onClick={handleSend}>
+            Send
+          </button>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Chat;

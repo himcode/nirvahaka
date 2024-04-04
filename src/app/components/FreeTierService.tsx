@@ -44,7 +44,7 @@ const FreeTierService: React.FC<Props> = ({ service, selected, id, type }) => {
   };
 
   const saveService = (event: FormEvent) => {
-    event.preventDefault();
+    event.preventDefault(); 
     let data = {
       sName: sName,
       category,

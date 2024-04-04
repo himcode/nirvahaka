@@ -1,0 +1,96 @@
+/* const ChatboxContainer = styled.div`
+  max-width: 400px;
+  margin: 20px auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+`;
+*/
+.messagesContainer {
+    padding: 10px;
+    height: 537px;
+    overflow-y: auto;
+    display: flex !important; 
+    flex-direction: column;
+    background-color: palegoldenrod;
+  }
+  
+  .InputContainer {
+    display: flex;
+    padding: 10px;
+    background-color: #f0f0f0;
+  }
+  
+  .InputField {
+    flex: 1;
+    padding: 8px;
+    margin-right: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .SendButton {
+    padding: 8px 12px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+   
+  
+  .ChatboxContainer {
+      min-height: 600px;
+      width: 600px;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+  }
+  .center {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .sender {
+      background-color: #3498db;
+    color: #fff;
+    align-self:flex-end  ;
+  }
+  .receiver  {
+      background-color: #ecf0f1;
+    color: #333;
+    align-self: flex-start;
+    
+  }
+  .message {
+      max-width: 70%;
+      margin: 10px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+  
+    .test {
+      display: flex !important; 
+      flex-direction: column !important;
+    }
+    
+    .userName {
+      align-self: center;
+      text-align: center;
+      font-weight: 700;
+      font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      padding-bottom: 3px;
+      min-width: 400px;
+      padding-top: 3px;
+      padding-left: 10px;
+      padding-right: 10px;
+      background-color: black;
+      color: white;
+      border-radius: 7px;
+    }
