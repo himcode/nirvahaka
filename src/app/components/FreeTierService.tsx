@@ -11,9 +11,17 @@ type Pair = {
 };
 interface Props {
   id: string;
-  service: object;
+  service: service;
   selected: boolean;
   type: string;
+}
+
+type service = {
+  sName: string;
+  category: string;
+  location: string;
+  displayPicture:string;
+  parameters: Pair[];
 }
 
 const FreeTierService: React.FC<Props> = ({ service, selected, id, type }) => {
@@ -42,9 +50,9 @@ const FreeTierService: React.FC<Props> = ({ service, selected, id, type }) => {
     setKey("");
     setValue("");
   };
-
+  console.log(pairs);
   const saveService = (event: FormEvent) => {
-    event.preventDefault(); 
+    event.preventDefault();
     let data = {
       sName: sName,
       category,
@@ -66,9 +74,8 @@ const FreeTierService: React.FC<Props> = ({ service, selected, id, type }) => {
   };
 
   useEffect(() => {
-    console.log(parameters)
-    if(!s){
-
+    console.log(parameters);
+    if (!s) {
       let data = {
         sName: sName,
         category,
@@ -79,15 +86,15 @@ const FreeTierService: React.FC<Props> = ({ service, selected, id, type }) => {
       };
       console.log(data);
       fetch(`${process.env.NEXT_PUBLIC_HOST_URL}editService`, {
-      method: "POST",
-      body: JSON.stringify(data),
-    })
-    .then((response) => response.json())
-    .then((result) => {
-      console.log(result);
-    })
-    .catch((error) => console.error(error));
-  }
+        method: "POST",
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => console.error(error));
+    }
   }, [s]);
 
   return (
@@ -156,7 +163,7 @@ const FreeTierService: React.FC<Props> = ({ service, selected, id, type }) => {
         className="flex flex-col w-3/5 bg-slate-500 p-10 items-center "
       >
         <ul>
-          {pairs.map((pair, index) => (
+          {pairs.map((pair, index) =>(
             <li key={index}>
               {pair.key}: {pair.value}
               <button onClick={() => handleParameterRemove(index)}>

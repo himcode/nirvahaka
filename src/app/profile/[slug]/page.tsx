@@ -10,6 +10,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
   const user: any = jwt.verify(token.value, process.env.JWT_KEY);
 
   let service;
+
+  let serviceUserId;
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_HOST_URL}getService`,
@@ -27,6 +29,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
     if (result.success) {
       service = result.result;
+
+      serviceUserId = result.userId;
     }
   } catch (error) {
     console.error("Error:", error);
@@ -46,6 +50,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
           selected={true}
           id={params.slug}
           type="view"
+          serviceUserId={serviceUserId}
         ></Tier1Service>
       )}
     </div>

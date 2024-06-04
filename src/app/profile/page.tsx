@@ -41,7 +41,6 @@ const Profile = async () => {
   console.log(result.profileType);
   return (
     <div>
-      abc
       {user.profileType === "service" && <Payment tier={result.tier}></Payment>}
       <EditProfile
         user={result.profile}

@@ -42,6 +42,7 @@ const NormalUserEditProfileForm: React.FC<Props> = ({ user, id, selected }) => {
       })
       .then((response) => response.json())
       .then((result) => {
+        console.log(result)
         setState(result[0].PostOffice[0].State)
       })
       .catch((error) => console.error(error));

@@ -14,7 +14,7 @@ const page = () => {
   }
   console.log(user)
   return (
-    <div className='container mt-56 ml-56 border'><Chat userId={user.userId}></Chat></div>
+    <div className='container mt-56 ml-56 border'><Chat userId={user.userId} recipientId={''}></Chat></div>
   )
 }
 

@@ -8,7 +8,7 @@
 */
 .messagesContainer {
     padding: 10px;
-    height: 537px;
+    height: 437px;
     overflow-y: auto;
     display: flex !important; 
     flex-direction: column;
@@ -24,6 +24,7 @@
   .InputField {
     flex: 1;
     padding: 8px;
+    color:black;
     margin-right: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
